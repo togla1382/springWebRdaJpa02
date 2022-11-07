@@ -2,6 +2,7 @@ package com.green.nowon.domain.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -12,5 +13,9 @@ public interface MyBoardMapper {
 
 	@Select("select * from my_board")
 	List<MyBoardDTO> findAll();
+
+	@Insert("insert into my_board(title, content, writer,read_count) "
+			+ "values(#{title}, #{content}, #{writer}, #{readCount} )")
+	void save(MyBoardDTO obj);
 
 }

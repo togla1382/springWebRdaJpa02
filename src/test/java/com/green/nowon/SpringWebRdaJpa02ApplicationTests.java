@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.green.nowon.domain.dao.MyBoardMapper;
+import com.green.nowon.domain.dto.mybatis.MyBoardDTO;
 import com.green.nowon.domain.entity.BoardEntity;
 import com.green.nowon.domain.entity.BoardEntityRepository;
 import com.green.nowon.domain.entity.ReplyEntity;
@@ -22,6 +24,19 @@ class SpringWebRdaJpa02ApplicationTests {
 	
 	@Autowired
 	ReplyEntityRepository replyEntityRepository;
+	
+	@Autowired
+	MyBoardMapper myBoardMapper;
+	
+	//@Test
+	void insertTest() {
+		
+		MyBoardDTO obj=MyBoardDTO.builder()
+				.title("제목테스트").content("내용테스트")
+				.writer("작성자Test")
+				.build();
+		myBoardMapper.save(obj);
+	}
 	
 	//@Test
 	void 댓글생성() {
@@ -69,7 +84,7 @@ class SpringWebRdaJpa02ApplicationTests {
 	}
 	
 	@Transactional
-	@Test
+	//@Test
 	void 게시글_상세페이지2() {
 		int bno=103;
 		BoardEntity result=repository.findById(bno).orElseThrow();

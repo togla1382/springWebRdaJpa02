@@ -27,4 +27,9 @@ public class MybatisBoardServiceProcess implements MybatisBoardService {
 		
 	}
 
+	@Override
+	public void save(MyBoardDTO dto) {
+		mapper.save(dto);		
+	}
+
 }
