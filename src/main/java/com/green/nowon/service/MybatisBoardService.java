@@ -10,4 +10,8 @@ public interface MybatisBoardService {
 
 	void save(MyBoardDTO dto);
 
+	void detail(long bno, Model model);
+
+	void delete(long bno);
+
 }

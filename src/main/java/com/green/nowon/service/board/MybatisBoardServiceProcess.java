@@ -32,4 +32,19 @@ public class MybatisBoardServiceProcess implements MybatisBoardService {
 		mapper.save(dto);		
 	}
 
+	//상세페이지 처리
+	@Override
+	public void detail(long bno, Model model) {
+		MyBoardDTO result=mapper.findByBno(bno);
+		
+		model.addAttribute("detail", result);
+		
+	}
+
+	@Override
+	public void delete(long bno) {
+		mapper.deleteByBno(bno);
+		
+	}
+
 }
