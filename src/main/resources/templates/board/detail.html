@@ -7,47 +7,90 @@
         	.edit-mode{
         		display: none;
         	}
+        	.flex{display:  flex;}
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script type="text/javascript">
+        	
         	function showEditMode(){
         		$(".edit-mode").show();
         		$(".default-mode").hide();
         	}
+        	function showDefaultMode(){
+        		$(".edit-mode").hide();
+        		$(".default-mode").show();
+        	}
+        /* 	
+        	$(function(){
+        		$("#form-edit").submit(function(e){
+        			e.preventDefault();
+        		});
+        	}); */
         </script>
     </head>
     <body>
     	<a href="/">HOME</a>
         <p>마이바티스 게시글 상세페이지</p>
-        <form>
+        <form id="form-edit" th:action="|/mybatis/boards/${detail.bno}|" method="post" >
 	        <ul>
 	        	<li>[[${detail.bno}]]</li>
 	        	<li>[[${detail.writer}]]</li>
 	        	<li>
 	        		<div class="default-mode">[[${detail.title}]]</div>
-	        		<div class="edit-mode"><input type="text" th:value="${detail.title}"> </div>
+	        		<div class="edit-mode"><input type="text" name="title" th:value="${detail.title}"></div>
 	        	</li>
 	        	<li>
 	        		<div class="default-mode">[[${detail.content}]]</div>
 	        		<div class="edit-mode">
-	        			<textarea rows="5" cols="60" >[[${detail.content}]]</textarea>
+	        			<textarea rows="5" cols="60" name="content">[[${detail.content}]]</textarea>
 	        		</div>
 	        	</li>
 	        	<li class="edit-mode">
+	        		<input type="hidden" name="_method" value="PUT">
 	        		<button type="submit">수정완료</button>
-	        		<button type="button">취소</button>
+	        		<button type="button" onclick="showDefaultMode()">취소</button>
 				</li>
 	        </ul>
         </form>
-        <div class="default-mode">
+        <div class="default-mode flex">
        		<button type="button" id="btn-edit" onclick="showEditMode()">수정</button>
-       		<form th:action="@{/mybatis/boards/{bno}(bno=${detail.bno})}" method="post">
+       		<form th:action="@{/mybatis/boards/{bno}(bno=${detail.bno})}" method="post" onsubmit="confirmDelete();">
 				<input type="hidden" name="_method" value="DELETE">
 				<button type="submit">삭제</button>
 			</form>
 		</div>
-        
-        
+		<hr>
+		<section>
+			<h1>댓글영역</h1>
+			<div>
+				<!-- <form th:action="|/mybatis/boards/${detail.bno}/reply|"> -->
+				<form th:action="@{/mybatis/boards/{bno}/reply(bno=${detail.bno})}" method="post">
+					<input type="text" name="text"  placeholder="댓글입력">
+					<input type="hidden" name="writer"  value="테스트">
+					<button type="submit">등록</button>
+				</form>
+				<table>
+					<tr>
+						<td>댓글번호</td>
+						<td>댓글</td>
+						<td>
+							<div>작성자</div>
+							<hr>
+							<div>작성일</div>
+						</td>
+					</tr>
+					<tr th:each="dto : ${replies}">
+						<td th:text="${dto.rno}">댓글번호</td>
+						<td th:text="${dto.text}">댓글</td>
+						<td>
+							<div th:text="${dto.writer}">작성자</div>
+							<hr>
+							<div th:text="${dto.createdDate}">작성일</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</section>
         
     </body>
 </html>

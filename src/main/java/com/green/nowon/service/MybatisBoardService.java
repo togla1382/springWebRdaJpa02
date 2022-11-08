@@ -14,4 +14,6 @@ public interface MybatisBoardService {
 
 	void delete(long bno);
 
+	void update(long bno, MyBoardDTO dto);
+
 }
