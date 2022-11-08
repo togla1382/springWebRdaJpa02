@@ -4,7 +4,8 @@
         <meta charset="UTF-8">
         <title>Insert title here</title>
         <style type="text/css">
-        	.edit-mode{
+        	.edit-mode,
+        	.re-edit-mode{
         		display: none;
         	}
         	.flex{display:  flex;}
@@ -19,6 +20,17 @@
         	function showDefaultMode(){
         		$(".edit-mode").hide();
         		$(".default-mode").show();
+        	}
+        	function reEditMode(el){
+        		$(el).parents("tr").css("background-color","yellow").find(".re-edit-mode").show();
+        		$(el).parents("tr").find(".re-def-mode").hide();
+        	}
+        	function reDefMode(el){
+        		$(el).parents("tr").find(".re-edit-mode").hide();
+        		$(el).parents("tr").css("background-color","transparent").find(".re-def-mode").show();
+        	}
+        	function reEditProc(el){
+        		$(el).parents("tr").find(".re-edit-form").submit();
         	}
         /* 	
         	$(function(){
@@ -81,17 +93,27 @@
 						</td>
 					</tr>
 					<tr th:each="dto : ${replies}">
-						<td th:text="${dto.text}">댓글</td>
+						<td class="re-def-mode" th:text="${dto.text}">댓글</td>
+						<td class="re-edit-mode">
+							<form class="re-edit-form" th:action="|/mybatis/boards/${detail.bno}/reply/${dto.rno}|" method="post">
+								<input type="text" name="text" th:value="${dto.text}">
+								<input type="hidden" name="_method" value="PUT">
+							</form>
+						</td>
 						<td>
 							<div th:text="${dto.writer}">작성자</div>
 							<div th:text="${dto.createdDate}">작성일</div>
 						</td>
-						<td>
-							수정
+						<td class="re-def-mode">
+							<button type="button"  onclick="reEditMode(this)">수정</button>
 							<form th:action="|/mybatis/boards/${detail.bno}/reply/${dto.rno}|" method="post">
 								<input type="hidden" name="_method" value="DELETE">
 								<button type="submit">삭제</button>
 							</form>
+						</td>
+						<td class="re-edit-mode">
+							<button type="button" onclick="reEditProc(this)">수정완료</button>
+							<button type="button" onclick="reDefMode(this)">취소</button>
 						</td>
 					</tr>
 				</table>

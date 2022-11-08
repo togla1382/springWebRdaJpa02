@@ -21,4 +21,16 @@ public class MyReplyServiceProcess implements MyReplyService {
 		
 	}
 
+	@Override
+	public void delete(long rno) {
+		mapper.deleteByRno(rno);
+		
+	}
+
+	@Override
+	public void update(long rno, String text) {
+		mapper.update(rno, text);
+		
+	}
+
 }
