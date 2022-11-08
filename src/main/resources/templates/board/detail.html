@@ -69,23 +69,29 @@
 					<input type="hidden" name="writer"  value="테스트">
 					<button type="submit">등록</button>
 				</form>
-				<table>
+				<table border="1">
 					<tr>
-						<td>댓글번호</td>
 						<td>댓글</td>
 						<td>
 							<div>작성자</div>
-							<hr>
 							<div>작성일</div>
+						</td>
+						<td>
+							관리
 						</td>
 					</tr>
 					<tr th:each="dto : ${replies}">
-						<td th:text="${dto.rno}">댓글번호</td>
 						<td th:text="${dto.text}">댓글</td>
 						<td>
 							<div th:text="${dto.writer}">작성자</div>
-							<hr>
 							<div th:text="${dto.createdDate}">작성일</div>
+						</td>
+						<td>
+							수정
+							<form th:action="|/mybatis/boards/${detail.bno}/reply/${dto.rno}|" method="post">
+								<input type="hidden" name="_method" value="DELETE">
+								<button type="submit">삭제</button>
+							</form>
 						</td>
 					</tr>
 				</table>

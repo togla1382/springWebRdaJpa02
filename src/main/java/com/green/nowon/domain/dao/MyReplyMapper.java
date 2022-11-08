@@ -15,7 +15,7 @@ public interface MyReplyMapper {
 	@Insert("insert into my_reply(text, writer, bno) values(#{text}, #{writer}, #{bno})")
 	void save(MyReply dto);
 
-	@Select("select * from my_reply where bno=#{fk}")
+	@Select("select * from my_reply where bno=#{fk} order by rno desc")
 	List<MyReply> findByBno(@Param("fk") long bno);
 
 }
