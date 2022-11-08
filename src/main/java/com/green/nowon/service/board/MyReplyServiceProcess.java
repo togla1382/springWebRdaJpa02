@@ -1,7 +1,10 @@
 package com.green.nowon.service.board;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.green.nowon.domain.dao.MyReplyMapper;
 import com.green.nowon.domain.dto.mybatis.MyReply;
@@ -31,6 +34,12 @@ public class MyReplyServiceProcess implements MyReplyService {
 	public void update(long rno, String text) {
 		mapper.update(rno, text);
 		
+	}
+
+	@Override
+	public void getList(long bno, Model model) {
+		List<MyReply> replies=mapper.findByBno(bno);
+		model.addAttribute("list", replies);
 	}
 
 }

@@ -34,20 +34,12 @@ public class MybatisBoardServiceProcess implements MybatisBoardService {
 		mapper.save(dto);		
 	}
 
-	
-	@Autowired
-	private MyReplyMapper myReplyMapper;
-	
 	//상세페이지 처리
 	@Override
 	public void detail(long bno, Model model) {
 		MyBoardDTO result=mapper.findByBno(bno);
 		
 		model.addAttribute("detail", result);
-		
-		//댓글도 읽어와서
-		List<MyReply> replies=myReplyMapper.findByBno(bno);
-		model.addAttribute("replies", replies);
 		
 	}
 
