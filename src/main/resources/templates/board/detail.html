@@ -3,21 +3,51 @@
     <head>
         <meta charset="UTF-8">
         <title>Insert title here</title>
+        <style type="text/css">
+        	.edit-mode{
+        		display: none;
+        	}
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script type="text/javascript">
+        	function showEditMode(){
+        		$(".edit-mode").show();
+        		$(".default-mode").hide();
+        	}
+        </script>
     </head>
     <body>
     	<a href="/">HOME</a>
         <p>마이바티스 게시글 상세페이지</p>
-        <ul>
-        	<li>[[${detail.bno}]]</li>
-        	<li>[[${detail.writer}]]</li>
-        	<li>[[${detail.title}]]</li>
-        	<li>[[${detail.content}]]</li>
-        </ul>
-        <form th:action="@{/mybatis/boards/{bno}(bno=${detail.bno})}" method="post">
-        	<input type="hidden" name="_method" value="DELETE">
-        	
-        	<button type="submit">삭제</button> 
+        <form>
+	        <ul>
+	        	<li>[[${detail.bno}]]</li>
+	        	<li>[[${detail.writer}]]</li>
+	        	<li>
+	        		<div class="default-mode">[[${detail.title}]]</div>
+	        		<div class="edit-mode"><input type="text" th:value="${detail.title}"> </div>
+	        	</li>
+	        	<li>
+	        		<div class="default-mode">[[${detail.content}]]</div>
+	        		<div class="edit-mode">
+	        			<textarea rows="5" cols="60" >[[${detail.content}]]</textarea>
+	        		</div>
+	        	</li>
+	        	<li class="edit-mode">
+	        		<button type="submit">수정완료</button>
+	        		<button type="button">취소</button>
+				</li>
+	        </ul>
         </form>
+        <div class="default-mode">
+       		<button type="button" id="btn-edit" onclick="showEditMode()">수정</button>
+       		<form th:action="@{/mybatis/boards/{bno}(bno=${detail.bno})}" method="post">
+				<input type="hidden" name="_method" value="DELETE">
+				<button type="submit">삭제</button>
+			</form>
+		</div>
+        
+        
         
     </body>
 </html>
