@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,12 +22,17 @@ public class MyReplyController {
 	@Autowired
 	private MyReplyService service;
 	
+	@ResponseBody
+	@GetMapping("/mybatis/boards/{bno}/count")
+	public int count(@PathVariable long bno) {
+		return service.getCount(bno);
+	}
 	
 	//댓글 모두 읽어오기
 	@GetMapping("/mybatis/boards/{bno}/replies")
-	public String replies(@PathVariable long bno, Model model) {
-			
-		service.getList(bno,model);
+	public String replies(@PathVariable long bno, int page, Model model) {
+		System.out.println("page:"+page);
+		service.getList(bno,page,model);
 		return "board/replies";
 		//응답을 다른페이지로 처리(HTML페이지가 요청한 페이지에서 성공시 결과데이터로 확인가능)
 	}
@@ -46,9 +52,11 @@ public class MyReplyController {
 		return service.delete(rno);
 	}
 	
+	//댓글수정
+	@ResponseBody
 	@PutMapping("/mybatis/boards/{bno}/reply/{rno}")
-	public String update(@PathVariable long bno, @PathVariable long rno, String text) {
+	public void update(@PathVariable long bno, @PathVariable long rno, String text) {
 		service.update(rno, text);
-		return "redirect:/mybatis/boards/"+bno;
+		//return "redirect:/mybatis/boards/"+bno;
 	}
 }

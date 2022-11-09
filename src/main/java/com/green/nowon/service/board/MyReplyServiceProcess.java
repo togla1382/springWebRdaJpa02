@@ -2,6 +2,9 @@ package com.green.nowon.service.board;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -16,6 +19,8 @@ public class MyReplyServiceProcess implements MyReplyService {
 
 	@Autowired
 	private MyReplyMapper mapper;
+	
+	private int size=3;//댓글표현개수
 	
 	@Override
 	public void save(long bno, MyReply dto) {
@@ -36,11 +41,37 @@ public class MyReplyServiceProcess implements MyReplyService {
 		mapper.update(rno, text);
 		
 	}
-
+	
 	@Override
 	public void getList(long bno, Model model) {
-		List<MyReply> replies=mapper.findByBno(bno);
+		//List<MyReply> replies=mapper.findAllByBno(bno);
+		int offset=0;
+		
+		//List<MyReply> replies=mapper.findByBno(bno, offset, size);
+		RowBounds rowBounds=new RowBounds(offset, size);
+		List<MyReply> replies=mapper.findByBnoAndRowBounds(bno, rowBounds);
 		model.addAttribute("list", replies);
+	}
+	
+	
+	
+	@Override
+	public void getList(long bno, int page, Model model) {
+		
+		int offset=(page-1)*size;
+		RowBounds rowBounds=new RowBounds(offset, size);
+		List<MyReply> replies=mapper.findByBnoAndRowBounds(bno, rowBounds);
+		model.addAttribute("list", replies);
+	}
+
+	@Override
+	public int getCount(long bno) {
+		int rowTotal=mapper.countAll(bno);
+		int pageTotal=rowTotal/size;
+		if(rowTotal%size>0)pageTotal++;
+		
+		
+		return pageTotal;
 	}
 
 }

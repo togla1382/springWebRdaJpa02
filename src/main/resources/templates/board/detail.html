@@ -12,10 +12,19 @@
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script th:inline="javascript">
-       		var bno= "[[${detail.bno}]]"
+       		var bno= "[[${detail.bno}]]";
+       		var rpage=1;
+       		var rpageTotal=0;
         	$(function(){
-        		getReplies();
+        		setCount();
+        		
+        		$("#text").keyup(inputEnterKey);
+        		$("#btnAdd").click(function(){
+        			rpage++;
+        			setCount();
+        		});
         	});
+        	
        		
        		//삭제처리
        		function reDeleteProc(rno){// 클릭시 전달받은 rno
@@ -28,10 +37,21 @@
        				//data: {_method: "DELETE"},
        				success: function(result){
        					console.log("삭제개수:"+result);
-       					getReplies();
+       					rpage=1;
+       					setCount();
        				}
        			});
        			
+       		}
+       		
+       		function setCount(){
+       			$.ajax({
+        			url: "/mybatis/boards/"+bno+"/count",
+        			success: function(result){
+        				rpageTotal=result;
+        				getReplies();
+        			}
+        		});
        		}
         	
        		//ajax로 댓글 갖고오는 함수
@@ -39,15 +59,41 @@
         		//var bno= "[[${detail.bno}]]";
         		
         		$.get("/mybatis/boards/"+bno+"/replies",
+        				{page: rpage},
         				function(rep){
-        					$("#display").html(rep);
+        					var content="";
+        					if(rpage>1){
+        						content += $("#display").html();
+        					}
+        					//alert(basehtml);
+        					$("#display").html(content+rep);
+        					console.log("댓글마지막페이지:"+rpageTotal);
+        					if(rpage >= rpageTotal){
+        						$("#btnAdd").hide();
+        					}else{
+        						$("#btnAdd").show();
+        					}
+        					
         		});
         		
         	}
-       		//ajax로 댓글 등록
-        	function registReply(el){
+       		
+       		//댓글에 엔터값이 등록되었을때 댓글등록 실행
+        	function inputEnterKey(event){
+        		if(event.which==13){
+        			console.log("엔터키가 입력되었네요");
+        			registReply();
+        		}
+        	}
+       		
+       		//ajax로 댓글 등록 : 등록버튼이 눌러졌을때 실행
+        	function registReply(){
        			var text=$("#text").val();
-       			
+       			if(text.trim()==""){
+       				alert("댓글을 입력하지 않았어요");
+       				$("#text").val("");
+       				return;
+       			}
        			$.ajax({
        				url : "/mybatis/boards/"+bno+"/reply",
        				type: "POST",
@@ -59,7 +105,9 @@
        				},
        				success:function(result){
        					console.log("처리결과:"+result);
-       					getReplies();
+       					rpage=1;
+       					setCount();
+       					$("#text").val("");
        				}
        			});
        			
@@ -97,10 +145,30 @@
         		$(el).parents("tr").find(".re-edit-mode").hide();
         		$(el).parents("tr").css("background-color","transparent").find(".re-def-mode").show();
         	}
+        	
+        	//댓글 수정처리
         	function reEditProc(el){
-        		$(el).parents("tr").find(".re-edit-form").submit();
+        		//pk: rno, 수정data: text
+        		var rno=$(el).siblings(".rno-data").val();
+        		var text=$(el).parents("tr").find(".text-data").val();
+        		$.ajax({
+        			url: "/mybatis/boards/"+bno+"/reply/"+rno,
+        			type: "PUT",
+        			data: {text: text},
+        			success: function(){
+        				console.log("수정완료");
+        				rpage=1;
+        				setCount();
+        			},
+        			error:function(){
+        				alert("수정되지 않았어요");
+        			}
+        		});
+	
         	}
-        
+        	
+        	
+        	
         </script>
     </head>
     <body>
@@ -139,11 +207,27 @@
 			<h1>댓글영역</h1>
 			<div>
 				<div>
-					<input type="text" id="text"  placeholder="댓글입력">
+					<input type="text" id="text"  placeholder="댓글입력"  >
 					<input type="hidden" id="writer"  value="테스트">
-					<button type="button" onclick="registReply(this)">등록</button>
+					<button type="button" onclick="registReply()">등록</button>
 				</div>
-				<div id="display">댓글이 존재하지 않아요</div>
+				<div>
+					<table border="1">
+						<thead>
+							<tr>
+								<th>댓글</th>
+								<th>
+									<div>작성자</div>
+									<div>작성일</div>
+								</th>
+								<th>관리</th>
+							</tr>
+						</thead>
+						<tbody id="display">
+						</tbody>
+					</table>
+				</div>
+				<button type="button" id="btnAdd">더보기(+)</button>
 			</div>
 		</section>
         

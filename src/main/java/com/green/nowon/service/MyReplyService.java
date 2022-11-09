@@ -14,4 +14,8 @@ public interface MyReplyService {
 
 	void getList(long bno, Model model);
 
+	void getList(long bno, int page, Model model);
+
+	int getCount(long bno);
+
 }
