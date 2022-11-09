@@ -16,6 +16,23 @@
         	$(function(){
         		getReplies();
         	});
+       		
+       		//삭제처리
+       		function reDeleteProc(rno){// 클릭시 전달받은 rno
+       			//alert("rno:"+rno);
+       		
+       			$.ajax({
+       				url:"/mybatis/boards/"+bno+"/reply/"+rno,
+       				type: "DELETE",//ajax에서만 가능
+       				//type: "POST",
+       				//data: {_method: "DELETE"},
+       				success: function(result){
+       					console.log("삭제개수:"+result);
+       					getReplies();
+       				}
+       			});
+       			
+       		}
         	
        		//ajax로 댓글 갖고오는 함수
         	function getReplies(){
@@ -29,12 +46,29 @@
         	}
        		//ajax로 댓글 등록
         	function registReply(el){
-        		
-        		$.post("/mybatis/boards/"+bno+"/reply",
-        				{text: $("#text").val(), writer: $("#writer").val()},
+       			var text=$("#text").val();
+       			
+       			$.ajax({
+       				url : "/mybatis/boards/"+bno+"/reply",
+       				type: "POST",
+       				data: {
+       					text : text ,// key(문자열): value(현재 변수적용)
+       					writer : $("#writer").val()},
+       				error: function(error){
+       					alert("댓글 등록이 정상적으로 처리 되지 않았어요\n"+error);
+       				},
+       				success:function(result){
+       					console.log("처리결과:"+result);
+       					getReplies();
+       				}
+       			});
+       			
+        		/*
+        		$.post("/mybatis/boards/"+bno+"/reply",//url
+        				{text: $("#text").val(),writer: $("#writer").val()},//data
         				function(data, status, xhr){
         					console.log("처리결과:"+status);
-        					if(status=="seccess"){
+        					if(status=="success"){
         						getReplies();	
         					}
         					if(status=="error"){
@@ -43,6 +77,8 @@
         					
         				}
         		);
+        		*/
+        		
         	}
         	
         	function showEditMode(){

@@ -22,26 +22,28 @@ public class MyReplyController {
 	private MyReplyService service;
 	
 	
-	
+	//댓글 모두 읽어오기
 	@GetMapping("/mybatis/boards/{bno}/replies")
 	public String replies(@PathVariable long bno, Model model) {
 			
 		service.getList(bno,model);
 		return "board/replies";
+		//응답을 다른페이지로 처리(HTML페이지가 요청한 페이지에서 성공시 결과데이터로 확인가능)
 	}
 
 	//댓글등록
 	@ResponseBody
 	@PostMapping("/mybatis/boards/{bno}/reply")
-	public boolean  save(@PathVariable long bno, MyReply dto) {
+	public  boolean  save(@PathVariable long bno, MyReply dto) {
 		service.save(bno, dto);
 		return true;
 	}
 	
+	//댓글삭제
+	@ResponseBody
 	@DeleteMapping("/mybatis/boards/{bno}/reply/{rno}")
-	public String delete(@PathVariable long bno, @PathVariable long rno) {
-		service.delete(rno);
-		return "redirect:/mybatis/boards/"+bno;
+	public int delete(@PathVariable long bno, @PathVariable long rno) {
+		return service.delete(rno);
 	}
 	
 	@PutMapping("/mybatis/boards/{bno}/reply/{rno}")
