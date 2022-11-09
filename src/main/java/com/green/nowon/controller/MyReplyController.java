@@ -33,8 +33,9 @@ public class MyReplyController {
 	//댓글등록
 	@ResponseBody
 	@PostMapping("/mybatis/boards/{bno}/reply")
-	public void save(@PathVariable long bno, MyReply dto) {
+	public boolean  save(@PathVariable long bno, MyReply dto) {
 		service.save(bno, dto);
+		return true;
 	}
 	
 	@DeleteMapping("/mybatis/boards/{bno}/reply/{rno}")

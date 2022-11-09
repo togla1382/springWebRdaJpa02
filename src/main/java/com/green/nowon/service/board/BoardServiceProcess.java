@@ -53,8 +53,8 @@ public class BoardServiceProcess implements BoardService{
 	@Override
 	public void getListAll(Model model) {
 		
-		//model.addAttribute("list", repository.findAll().stream().map(BoardListDTO::new).toList());
-		model.addAttribute("list", repository.myFindAll().stream().map(BoardListDTO::new).toList());
+		//model.addAttribute("list", repository.findAll().stream().map(BoardListDTO::new).toList());//사용하지 맙시다
+		model.addAttribute("list", repository.myFindAll().stream().map(BoardListDTO::new).collect(Collectors.toList()));
 		
 		//List<BoardEntity> result=repository.findAll();
 		//Stream<BoardEntity>  st=result.stream();
